@@ -19,6 +19,9 @@ const InputComp = ({setDisable}) => {
             variant="flushed"
             placeholder='Escribí un item'
             value={item}
+            size='lg'
+            fontSize='2xl'
+            fontWeight='bolder'
             onChange={handleChange}
             />
    );

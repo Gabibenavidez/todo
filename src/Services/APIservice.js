@@ -8,6 +8,9 @@ const BASE_URL = 'https://api-3sxs63jhua-uc.a.run.app/v1/todo/';
 export const axiosInstance = axios.create({
   baseURL : BASE_URL,
 })
+export const getTasks = () => {
+  return axiosInstance.get(`:${userID}`);
+}
 
 export const postTask = (body) => {
   return axiosInstance.post(`:${userID}`, body);
@@ -18,7 +21,7 @@ export const resetTasks = () => {
 }
 
 export const removeTask = (body) => {
-  return axiosInstance.delete(`:${userID}`, {data: body})
+  return axiosInstance.delete(`:${userID}`,{data: body})
 }
 
 export const getCompletedTasks = () => {

@@ -30,6 +30,7 @@ function AlertComp ({setIsActive})  {
       <Button bgColor='white'
                           rightIcon={<MdOutlineAddCircle/>}
                           onClick={onOpen}
+                          fontWeight='bold'
                     >To do list</Button>
 
       <AlertDialog
@@ -37,22 +38,22 @@ function AlertComp ({setIsActive})  {
         onClose={onClose}
       >
         <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+          <AlertDialogContent w='70%' rounded={20}>
+            <AlertDialogHeader fontSize='xl' fontWeight='bold'>
              Empezar una nueva lista
             </AlertDialogHeader>
 
-            <AlertDialogBody>
-              Cuando comenzás una nueva lista, tu lista existente se elimina.
+            <AlertDialogBody fontWeight='normal'>
+              Cuando comenzás una nueva lista, tu lista existente se elimina.<br></br>
               ¿Estas seguro que querés empezar una nueva lista?
             </AlertDialogBody>
 
-            <AlertDialogFooter>
-              <Button onClick={onClose}>
+            <AlertDialogFooter justifyContent='center'>
+              <Button onClick={onClose} rounded='100' fontWeight='ligth'>
                 Cancelar
               </Button>
-              <Button color='gray.200' bgColor='gray.800' onClick={handleReset} ml={3}>
-                Nueva Lista
+              <Button color='gray.200' bgColor='gray.800' rounded='100' fontWeight='ligth' onClick={handleReset} ml={3}>
+                Nueva lista
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

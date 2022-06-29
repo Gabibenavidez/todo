@@ -1,5 +1,5 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
-import { postTask, resetTasks, removeTask, setTaskCompleted } from '../../Services/APIservice';
+import { postTask, resetTasks, removeTask, setTaskCompleted, getTasks, getCompletedTasks } from '../../Services/APIservice';
 
 export const addApiTask = createAsyncThunk(
   'task/addTask',
@@ -21,7 +21,6 @@ export const resetApiTasks = createAsyncThunk(
   export const deleteApiTask = createAsyncThunk(
     'task/deleteTask',
     async (todoId) => {
-      console.log(todoId)
       return await removeTask(todoId)
       .then(res => res.data)
       .catch(error => console.log(error))
@@ -35,12 +34,33 @@ export const resetApiTasks = createAsyncThunk(
       .catch(error => console.log(error))
     }
   )
-
+  export const getApiTasks = createAsyncThunk(
+    'task/getTasks',
+    async () => {
+      return await getTasks()
+      .then(res => res.data)
+      .catch(error => console.log(error))
+    }
+  )
+  export const getApiUncompletedTasks = createAsyncThunk(
+    'task/getUncompletedTasks',
+    async () => {
+      return await getCompletedTasks()
+      .then(res => res.data)
+      .catch(error => console.log(error))
+    }
+  )
+  export const getApiCompletedTasks = createAsyncThunk(
+    'task/getCompletedTasks',
+    async () => {
+      return await getTasks()
+      .then(res => res.data)
+      .catch(error => console.log(error))
+    }
+  )
 const initialState = {
   tasksList: [],
   task: '',
-  tasksCompleted: [],
-  tasksUncompleted: [],
   status: 'idle',
   error: null
 };
@@ -54,18 +74,6 @@ export const tasksSlice = createSlice({
         state.task = action.payload;
       }
     },
-    showCompletedTasks: {
-      reducer(state, action) {
-        state.tasksCompleted = action.payload.filter(
-          (task) => task.completed === true)
-      }
-    },
-    showUncompletedTasks: {
-      reducer(state, action) {
-        state.tasksUncompleted = action.payload.filter(
-          (task) => task.completed === false)
-      }
-    }
   },
   extraReducers (builder) {
     builder
@@ -99,11 +107,35 @@ export const tasksSlice = createSlice({
       .addCase(deleteApiTask.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.tasksList = state.tasksList.filter(
-          ({todoId}) => todoId !== action.meta.arg.todoId
+          ({todoId, id}) => todoId === String ? todoId : id !== action.meta.arg.todoId
         );
         localStorage.setItem('tasksList', JSON.stringify(state.tasksList));
       })
       .addCase(deleteApiTask.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      .addCase(getApiTasks.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(getApiTasks.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.tasksList = action.payload;
+        localStorage.setItem('tasksList', JSON.stringify(state.tasksList));
+      })
+      .addCase(getApiTasks.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      .addCase(getApiUncompletedTasks.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(getApiUncompletedTasks.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.tasksList = action.payload;
+        localStorage.setItem('tasksList', JSON.stringify(state.tasksList));
+      })
+      .addCase(getApiUncompletedTasks.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
       })
@@ -112,20 +144,29 @@ export const tasksSlice = createSlice({
       })
       .addCase(setCompletedTask.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        const value = state.tasksList.findIndex(
-          ({todoId}) => todoId === action.meta.arg.todoId,
-          );
-        state.tasksList[value].completed = true;
-
+        console.log(action.payload);
       })
       .addCase(setCompletedTask.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      .addCase(getApiCompletedTasks.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(getApiCompletedTasks.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.tasksList = action.payload.filter(
+          (task) => task.completed === true)
+        localStorage.setItem('tasksList', JSON.stringify(state.tasksList));
+      })
+      .addCase(getApiCompletedTasks.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
       })
   }
 })
 
-export const { addTask, showCompletedTasks, showUncompletedTasks } = tasksSlice.actions;
+export const { addTask } = tasksSlice.actions;
 export default tasksSlice.reducer;
 export const addedTasks = state => state.tasks.tasksList;
 export const newTask = state => state.tasks.task;

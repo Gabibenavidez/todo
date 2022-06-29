@@ -12,22 +12,20 @@ import {
   PopoverContent,
   PopoverBody,
   Flex,
-  Heading 
+  Heading ,
+  Text
 } from '@chakra-ui/react';
-import { useState } from 'react';
-import { addApiTask, addedTasks, newTask, showCompletedTasks, showUncompletedTasks } from '../../app/features/tasksReducer';
+import { useEffect, useState } from 'react';
+import { addApiTask, getApiCompletedTasks, newTask, getApiTasks, getApiUncompletedTasks } from '../../app/features/tasksReducer';
 import { useDispatch, useSelector } from 'react-redux';
 import ItemsList from '../ItemsList';
 import AlertComp from '../Alert';
-import CompletedItems from '../CompletedItems';
-import UncompletedItems from '../UncompletedItems';
 
 
-
-export default function Pricing() {
+export default function Home() {
   const dispatch = useDispatch();
   const task = useSelector(newTask)
-  const tasksList = useSelector(addedTasks);
+  //const tasksList = useSelector(addedTasks);
   const Options = ['Todos', 'Realizados', 'No Realizados'];
   const [optionName, setOptionName] = useState('Todos');
   const [disable, setDisable] = useState(true);
@@ -40,12 +38,21 @@ export default function Pricing() {
   }
   const handleOptions = (option) => {
     setOptionName(option);
-    if (option === 'Realizados') {
-      dispatch(showCompletedTasks(tasksList));
+      if (option === 'Todos') {
+        dispatch(getApiTasks())
+      }
+      else if (option === 'Realizados') {
+      dispatch(getApiCompletedTasks());
     } else if(option === 'No Realizados') {
-      dispatch(showUncompletedTasks(tasksList));
+      dispatch(getApiUncompletedTasks());
     }
   }
+
+  useEffect(() => {
+    if(!(localStorage.getItem('tasksList') === true)) {
+      setIsActive(true);
+    }
+  }, [])
 
   return (
     <>
@@ -54,7 +61,7 @@ export default function Pricing() {
       {isActive === false ?
       <Stack mb={5} mr={20}>
         <Heading>To do list</Heading>
-        <Heading size='sm'>¿Que cosas tenés que terminar hoy?</Heading>
+        <Text fontWeight='480'>¿Que cosas tenés que terminar hoy?</Text>
       </Stack>
       : null}
       <InputComp setDisable={setDisable}/>
@@ -96,6 +103,7 @@ export default function Pricing() {
                         justifyContent="center"
                         fontWeight="normal"
                         fontSize="sm"
+                        color={option === optionName ? 'orange' : ''}
                         mr={2}
                         onClick={() => handleOptions(option)}
                         >
@@ -108,18 +116,20 @@ export default function Pricing() {
               </Popover>
             </Flex>
           </Flex>
-              {optionName === 'Realizados' ? <CompletedItems /> : optionName === 'No Realizados' ?  <UncompletedItems /> : optionName === 'Todos' ? <ItemsList /> : null }
+              <ItemsList />
           </>: null}
       </Box>
       <Button
             mt={10}
             maxW={'330px'}
             w={'full'}
-            bg={'gray.800'}
-            color={'gray.200'}
+            bg={'blackAlpha.800'}
+            _disabled={{bgColor:'whiteAlpha.400'}}
+            color={'gray.300'}
             opacity='1'
             borderRadius='100'
             disabled={disable}
+            fontWeight='light'
             onClick={handleClick}>
             Agregar
           </Button>

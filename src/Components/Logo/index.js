@@ -1,7 +1,9 @@
-import { Image } from '@chakra-ui/react'
+import { Image, Box } from '@chakra-ui/react'
 const Logo = () => {
   return ( 
-    <Image className='logo' src="//poincenot.com/wp-content/uploads/2020/07/logo-pcnt-light.svg" w='200px' alt='logo' marginRight='130px' mb={10} />
+    <Box>
+        <Image className='logo' src="https://poincenot.com/wp-content/uploads/montania-noche.svg" w='80px' alt='logo' mr={280} mb={10} />
+    </Box>
    );
 }
  
