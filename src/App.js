@@ -11,9 +11,8 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-      dispatch(getApiTasks());
       localStorage.setItem('tasksList', JSON.stringify(tasksList))
-  }, [dispatch])
+  }, [dispatch, tasksList])
 
   
   return (

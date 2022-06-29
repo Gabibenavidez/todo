@@ -82,7 +82,7 @@ export const tasksSlice = createSlice({
       })
       .addCase(addApiTask.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.tasksList = [...state.tasksList.concat(action.payload)];
+        state.tasksList = action.payload;
         state.task = '';
         localStorage.setItem('tasksList', JSON.stringify(state.tasksList));
       })
@@ -95,7 +95,7 @@ export const tasksSlice = createSlice({
       })
       .addCase(resetApiTasks.fulfilled, (state) => {
         state.status = 'succeeded';
-        state.tasksList = state.tasksList.splice();
+        state.tasksList = null;
       })
       .addCase(resetApiTasks.rejected, (state, action) => {
         state.status = 'failed';

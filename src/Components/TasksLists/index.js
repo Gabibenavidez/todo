@@ -25,15 +25,16 @@ import AlertComp from '../Alert';
 export default function Home() {
   const dispatch = useDispatch();
   const task = useSelector(newTask)
-  //const tasksList = useSelector(addedTasks);
   const Options = ['Todos', 'Realizados', 'No Realizados'];
   const [optionName, setOptionName] = useState('Todos');
   const [disable, setDisable] = useState(true);
   const [isActive, setIsActive] = useState(false);
+ 
 
-  const handleClick = () => {
+  const handleClick = async () => {
     setIsActive(true);
-    dispatch(addApiTask({title: task, message: 'task added'}))
+    dispatch(addApiTask({title: task, message: 'task added'}));
+    dispatch(getApiTasks());
     setDisable(true);
   }
   const handleOptions = (option) => {
@@ -47,12 +48,6 @@ export default function Home() {
       dispatch(getApiUncompletedTasks());
     }
   }
-
-  useEffect(() => {
-    if(!(localStorage.getItem('tasksList') === true)) {
-      setIsActive(true);
-    }
-  }, [])
 
   return (
     <>
